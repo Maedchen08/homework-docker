@@ -1,0 +1,36 @@
+version: '3.1'
+services:
+  database:
+    image: mongo
+    container_name: mongo-db
+    restart: always
+    ports: 
+    - 27017:27017
+    environment: 
+      MONGO_INITDB_ROOT_USERNAME: ${DB_USER:-root}
+      MONGO_INITDB_ROOT_PASSWORD:  ${DB_PASS:-password}
+      MONGO_INITDB_DATABASE: rakamin
+  server:
+    image: 3k4nurr/go-server:backend
+    # build: 
+    #   context: ./go-server
+    #   target: release
+    depends_on: 
+    - database
+    container_name: go-server-todo
+    environment:
+      DB_URI: mongodb://${DB_USER:-root}:${DB_PASS:-password}@mongo-db:27017
+      DB_NAME: rakamin
+      DB_COLLECTION_NAME: todolist
+    ports: 
+    - 8080:8080
+  app:
+    image: 3k4nurr/frontend:a1
+    # build:
+    #   context: ./client
+    #   target: nginxrelease
+    container_name: client-todo
+    environment: 
+      REACT_APP_API: http://go-server-todo:8080
+    ports: 
+    - 8083:8080
