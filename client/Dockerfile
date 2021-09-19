@@ -17,7 +17,7 @@ FROM abdennour/nginx-distroless-unprivileged:1.18 as release
 WORKDIR /opt/app
 COPY --from=build --chown=1001:0 /code/conf/nginx /etc/nginx/conf.d
 COPY --from=build  --chown=1001:0 /code/build/. .
-
+EXPOSE 3000
 USER 1001
 # stage - dev
 # TODO - hot-reload (npm start)
